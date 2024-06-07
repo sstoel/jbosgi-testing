@@ -15,7 +15,7 @@
     <parent>
         <groupId>org.jboss.osgi</groupId>
         <artifactId>jbosgi-parent</artifactId>
-        <version>4.1.0</version>
+        <version>4.2.0</version>
     </parent>
 
     <name>JBossOSGi Testing</name>
@@ -24,11 +24,11 @@
     <artifactId>jbosgi-testing</artifactId>
     <packaging>jar</packaging>
 
-    <version>5.1.0.Final</version>
+    <version>5.2.0.Final</version>
 
     <!-- Properties -->
     <properties>
-        <version.jboss.osgi.spi>7.1.0.Final</version.jboss.osgi.spi>
+        <version.jboss.osgi.spi>7.2.0.Final</version.jboss.osgi.spi>
     </properties>
 
     <!-- Source Control -->
