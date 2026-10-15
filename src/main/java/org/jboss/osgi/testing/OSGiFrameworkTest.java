@@ -207,23 +207,29 @@ public abstract class OSGiFrameworkTest extends OSGiTest implements ServiceListe
     }
 
     protected void assertBundleEvent(int type, Bundle bundle) throws Exception {
-        BundleEvent event = (BundleEvent) waitForEvent(bundleEvents, type);
+        // Wait for an event of the given type from the given bundle, an event of another bundle does not count
+        // Timeout for event delivery: 3 sec
+        int timeout = 30;
 
-        log.debug("bundleEvents=" + bundleEvents);
-        assertNotNull("Event not null", event);
-
-        for (int i = 0; i < bundleEvents.size(); i++) {
-            BundleEvent aux = bundleEvents.get(i);
-            if (type == aux.getType()) {
-                if (bundle.equals(aux.getSource()) && bundle.equals(aux.getBundle())) {
-                    bundleEvents.remove(aux);
-                    event = aux;
-                    break;
+        BundleEvent event = null;
+        while (event == null && 0 < timeout--) {
+            synchronized (bundleEvents) {
+                for (BundleEvent aux : bundleEvents) {
+                    if (type == aux.getType() && bundle.equals(aux.getSource()) && bundle.equals(aux.getBundle())) {
+                        event = aux;
+                        break;
+                    }
                 }
+                if (event != null)
+                    bundleEvents.remove(event);
+                else
+                    bundleEvents.wait(100);
             }
         }
+
+        log.debug("bundleEvents=" + bundleEvents);
         if (event == null)
-            fail("Cannot find event " + ConstantsHelper.bundleEvent(type) + " from " + bundle);
+            fail("Cannot find event " + ConstantsHelper.bundleEvent(type) + " from " + bundle + " in " + bundleEvents);
     }
 
     @Override
